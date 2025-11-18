@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import type { Product } from '../types';
 import PlusIcon from './icons/PlusIcon';
@@ -38,7 +39,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, cartQuantity, onAddT
     }
     if (product.stock <= product.minStock) {
       return (
-        <span className="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+        <span className="bg-brand-gold-light text-brand-navy text-xs font-semibold px-2.5 py-0.5 rounded-full">
           Sugerido
         </span>
       );
@@ -80,21 +81,21 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, cartQuantity, onAddT
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-md flex flex-col overflow-hidden">
+    <div className="bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col overflow-hidden h-full">
       <div 
-        className="relative p-4 cursor-pointer"
+        className="relative p-4 cursor-pointer bg-white"
         onClick={handleDetailClick}
       >
         <div className="absolute top-2 left-2 z-10">{getStockBadge()}</div>
         <img
           src={product.imageUrl}
           alt={product.name}
-          className="w-full h-32 object-contain mx-auto"
+          className="w-full h-28 object-contain mx-auto"
         />
       </div>
-      <div className="p-4 flex flex-col flex-grow">
+      <div className="p-4 flex flex-col flex-grow bg-white">
         <h3 
-          className="font-bold text-gray-800 h-12 overflow-hidden"
+          className="font-bold text-brand-text-dark text-sm h-10 overflow-hidden leading-tight"
           style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}
           onClick={handleDetailClick}
         >
@@ -102,57 +103,49 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, cartQuantity, onAddT
         </h3>
         <div className="mt-2" onClick={handleDetailClick}>
           {product.currentPrice < product.avgPrice ? (
-            <div className="flex items-baseline gap-2">
-              <span className="text-xl font-bold text-green-600">
+            <div className="flex flex-col">
+              <span className="text-lg font-bold text-brand-navy">
                 R$ {product.currentPrice.toFixed(2)}
               </span>
-              <span className="text-sm text-gray-500 line-through">
+              <span className="text-xs text-gray-400 line-through">
                 R$ {product.avgPrice.toFixed(2)}
               </span>
             </div>
           ) : (
-            <span className="text-xl font-bold text-gray-800">
+            <span className="text-lg font-bold text-brand-navy">
               R$ {product.currentPrice.toFixed(2)}
             </span>
           )}
-          <p className="text-xs text-gray-500">Preço médio pago</p>
         </div>
-        <div className="mt-auto pt-4">
+        <div className="mt-auto pt-3">
           {!isInCart ? (
             <button
               onClick={handleAddClick}
-              className={`w-full bg-black text-white font-bold py-2 px-4 rounded-md hover:bg-gray-800 transition-colors duration-200 ${isAdding ? 'animate-button-pulse' : ''}`}
+              className={`w-full bg-brand-navy text-white font-bold py-2 px-4 rounded-lg hover:bg-brand-navy/90 transition-all duration-200 text-sm ${isAdding ? 'animate-button-pulse' : ''}`}
             >
               Adicionar
             </button>
           ) : (
             <div className="flex flex-col items-center gap-2">
-              <div className="flex items-center justify-between border border-gray-400 rounded-md w-full">
+              <div className="flex items-center justify-between border border-brand-navy rounded-lg w-full overflow-hidden">
                 <button
                   onClick={handleDecreaseQuantity}
-                  className={`p-2 text-black rounded-l-md hover:bg-gray-100 transition-colors ${animatedButton === 'minus' ? 'animate-button-flash' : ''}`}
+                  className={`p-2 text-brand-navy hover:bg-gray-100 transition-colors ${animatedButton === 'minus' ? 'animate-button-flash' : ''}`}
                   aria-label="Diminuir quantidade"
                 >
-                  <MinusIcon className="w-5 h-5" />
+                  <MinusIcon className="w-4 h-4" />
                 </button>
-                <span className={`font-bold text-lg text-gray-800 inline-block ${isAnimatingQuantity ? 'animate-quantity-pop' : ''}`}>
+                <span className={`font-bold text-brand-navy inline-block ${isAnimatingQuantity ? 'animate-quantity-pop' : ''}`}>
                   {cartQuantity}
                 </span>
                 <button
                   onClick={handleIncreaseQuantity}
-                  className={`p-2 text-black rounded-r-md hover:bg-gray-100 transition-colors ${animatedButton === 'plus' ? 'animate-button-flash' : ''}`}
+                  className={`p-2 text-brand-navy hover:bg-gray-100 transition-colors ${animatedButton === 'plus' ? 'animate-button-flash' : ''}`}
                   aria-label="Aumentar quantidade"
                 >
-                  <PlusIcon className="w-5 h-5" />
+                  <PlusIcon className="w-4 h-4" />
                 </button>
               </div>
-              <button
-                onClick={handleRemoveItem}
-                className="w-full flex items-center justify-center gap-1 text-center text-sm py-1.5 bg-red-500 text-white font-bold rounded-md hover:bg-red-600 transition-colors"
-              >
-                <TrashIcon className="w-4 h-4" />
-                Remove
-              </button>
             </div>
           )}
         </div>

@@ -43,11 +43,12 @@ const mockProducts: Product[] = [
   { id: 8, name: 'Queijo Mussarela Fatiado 200g', brand: 'Marca H', weight: '200g', imageUrl: 'https://picsum.photos/id/321/200/200', stock: 3, minStock: 2, avgPrice: 10.00, currentPrice: 9.80, category: 'Frios e Leite', consumptionRate: 11 },
 ];
 
+// Update Quick Access icons to use brand-navy
 const quickAccessItems = [
-    { id: 'categories_qa', label: 'Categorias', icon: <CategoryIcon className="w-7 h-7 text-blue-800"/> },
-    { id: 'history', label: 'Histórico', icon: <HistoryIcon className="w-7 h-7 text-blue-800"/> },
-    { id: 'stats', label: 'Estatísticas', icon: <PieChartIcon className="w-7 h-7 text-blue-800"/> },
-    { id: 'offers', label: 'Ofertas', icon: <TagIcon className="w-7 h-7 text-blue-800"/> },
+    { id: 'categories_qa', label: 'Categorias', icon: <CategoryIcon className="w-7 h-7 text-brand-navy"/> },
+    { id: 'history', label: 'Histórico', icon: <HistoryIcon className="w-7 h-7 text-brand-navy"/> },
+    { id: 'stats', label: 'Estatísticas', icon: <PieChartIcon className="w-7 h-7 text-brand-navy"/> },
+    { id: 'offers', label: 'Ofertas', icon: <TagIcon className="w-7 h-7 text-brand-navy"/> },
 ];
 
 const App: React.FC = () => {
@@ -233,14 +234,14 @@ const App: React.FC = () => {
     // Ensure dashboard elements are not interactive/visible during registration for a cleaner look
     if (showRegistration) {
         return (
-             <div className="h-full w-full bg-gray-100 opacity-50 filter blur-sm pointer-events-none">
+             <div className="h-full w-full bg-brand-bg opacity-50 filter blur-sm pointer-events-none">
                 <DashboardHeader 
                     userName="Visitante"
                     pantryStatus={0}
                     notificationCount={0}
                     onNotificationClick={() => {}}
                 />
-                <div className="p-8 text-center text-gray-500 mt-10">
+                <div className="p-8 text-center text-brand-blue-medium mt-10">
                     <p>Carregando dados...</p>
                 </div>
             </div>
@@ -285,6 +286,8 @@ const App: React.FC = () => {
                   onClearCart={() => setShoppingCart(new Map())}
                 />;
       case 'more':
+        // Re-map "More" to behave like Profile/Menu as per tab change
+        // For now keeping MoreScreen but passing Profile active state if clicked
         return <MoreScreen onNavigate={setActiveTab} />;
       case 'profile':
         return <ProfileScreen 
@@ -311,13 +314,12 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-brand-bg flex flex-col">
        {showRegistration && (
         <RegistrationModal onComplete={handleRegistrationComplete} />
        )}
 
-       {/* Conditional header rendering can be adjusted based on final navigation */}
-      <main className="flex-grow pb-24">
+      <main className="flex-grow pb-28">
         {renderContent()}
       </main>
 
@@ -341,17 +343,17 @@ const App: React.FC = () => {
           <FloatingActionButton 
             onClick={() => setIsNotesOpen(true)} 
             icon={<PencilSquareIcon className="w-6 h-6" />}
-            className="bottom-40 right-4 w-14 h-14 bg-white text-blue-600"
+            className="bottom-40 right-4 w-14 h-14 bg-white text-brand-navy border border-gray-100"
             ariaLabel="Anotações"
           />
       )}
 
-      {/* Primary FAB: Scan/Add - Hidden during registration */}
+      {/* Primary FAB: Scan/Add - Hidden during registration - UPDATED TO GOLD */}
       {activeTab !== 'profile' && !showRegistration && (
         <FloatingActionButton 
             onClick={() => setIsAddingProduct(true)} 
             icon={<QrCodeScannerIcon className="w-8 h-8" />}
-            className="bottom-20 right-4 w-16 h-16 bg-blue-600 text-white"
+            className="bottom-20 right-4 w-16 h-16 bg-brand-gold text-brand-navy shadow-brand-gold/40"
             ariaLabel="Escanear produto"
         />
       )}

@@ -6,6 +6,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mercado Smart</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                navy: '#1E2F47', // Primary Background / Headers
+                blue: {
+                  medium: '#4A6082', // Secondary text / icons
+                  light: '#9EAFC5',  // Hints
+                },
+                gold: {
+                  DEFAULT: '#E2B248', // Accents / FABs / Primary Buttons
+                  light: '#F0D09B',   // Background accents
+                },
+                bg: '#F8F8F8', // App Background
+                text: {
+                    dark: '#1E293B',
+                    light: '#D6D6D6'
+                }
+              }
+            }
+          }
+        }
+      }
+    </script>
     <style>
       @keyframes cart-bounce {
         0%,
@@ -22,11 +48,11 @@
       @keyframes button-pulse {
         0%, 100% {
           transform: scale(1);
-          background-color: #000; /* black */
+          background-color: #1E2F47; /* brand-navy */
         }
         50% {
           transform: scale(1.05);
-          background-color: #00C853; /* green */
+          background-color: #E2B248; /* brand-gold */
         }
       }
       .animate-button-pulse {
@@ -72,7 +98,7 @@
 }
 </script>
   </head>
-  <body class="bg-gray-50">
+  <body class="bg-brand-bg">
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
   </body>
