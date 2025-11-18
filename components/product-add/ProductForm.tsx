@@ -1,7 +1,9 @@
+
 import React, { useState } from 'react';
 import type { ProductFormData } from '../../types';
 import { categoriesData } from '../../data/categories';
 import XMarkIcon from '../icons/XMarkIcon';
+import MagnifyingGlassIcon from '../icons/MagnifyingGlassIcon';
 
 interface ProductFormProps {
   initialData?: Partial<ProductFormData>;
@@ -43,6 +45,14 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSave, onClose 
     onSave(formData as ProductFormData);
   };
 
+  const handleGoogleSearch = () => {
+    if (formData.name) {
+      window.open(`https://www.google.com/search?q=${encodeURIComponent(formData.name as string)}`, '_blank');
+    } else {
+      alert("Digite o nome do produto para pesquisar.");
+    }
+  };
+
   return (
     <div className="w-full h-full bg-gray-100 overflow-y-auto">
         <header className="bg-white p-4 flex items-center justify-between sticky top-0 z-10 shadow-sm">
@@ -59,7 +69,25 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSave, onClose 
             
             <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700">Nome do Produto</label>
-                <input type="text" name="name" id="name" value={formData.name} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required />
+                <div className="flex gap-2 mt-1">
+                    <input 
+                        type="text" 
+                        name="name" 
+                        id="name" 
+                        value={formData.name} 
+                        onChange={handleChange} 
+                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" 
+                        required 
+                    />
+                    <button
+                        type="button"
+                        onClick={handleGoogleSearch}
+                        className="bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition-colors shadow-sm"
+                        title="Pesquisar no Google"
+                    >
+                        <MagnifyingGlassIcon className="w-5 h-5" />
+                    </button>
+                </div>
             </div>
 
             <div>
