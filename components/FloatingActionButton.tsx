@@ -1,18 +1,26 @@
+
 import React from 'react';
-import QrCodeScannerIcon from './icons/QrCodeScannerIcon';
 
 interface FloatingActionButtonProps {
   onClick: () => void;
+  icon: React.ReactNode;
+  className?: string;
+  ariaLabel?: string;
 }
 
-const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({ onClick }) => {
+const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({ 
+  onClick, 
+  icon, 
+  className = "", 
+  ariaLabel 
+}) => {
   return (
     <button
       onClick={onClick}
-      className="fixed bottom-20 right-4 w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-blue-700 active:scale-95 transition-all duration-200 z-20"
-      aria-label="Escanear produto"
+      className={`fixed rounded-full flex items-center justify-center shadow-lg transition-all duration-200 z-20 active:scale-95 hover:brightness-110 ${className}`}
+      aria-label={ariaLabel}
     >
-      <QrCodeScannerIcon className="w-8 h-8" />
+      {icon}
     </button>
   );
 };

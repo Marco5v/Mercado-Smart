@@ -8,6 +8,7 @@ import ShoppingListScreen from './components/ShoppingListScreen';
 import MoreScreen from './components/MoreScreen';
 import NotificationsScreen from './components/NotificationsScreen';
 import AddProductFlow from './components/product-add/AddProductFlow';
+import NotesModal from './components/NotesModal';
 import type { Product, Notification } from './types';
 import { initialNotifications } from './data/notifications';
 import { ShoppingCartIcon } from '@heroicons/react/24/outline';
@@ -20,6 +21,8 @@ import DashboardHeader from './components/dashboard/DashboardHeader';
 import IntelligenceCarousel from './components/dashboard/IntelligenceCarousel';
 import SuggestionsSection from './components/dashboard/SuggestionsSection';
 import FloatingActionButton from './components/FloatingActionButton';
+import QrCodeScannerIcon from './components/icons/QrCodeScannerIcon';
+import PencilSquareIcon from './components/icons/PencilSquareIcon';
 import CategoryIcon from './components/icons/CategoryIcon';
 import PieChartIcon from './components/icons/PieChartIcon';
 import TagIcon from './components/icons/TagIcon';
@@ -57,6 +60,10 @@ const App: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [isAddingProduct, setIsAddingProduct] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>(initialNotifications);
+  
+  // Notes functionality
+  const [isNotesOpen, setIsNotesOpen] = useState(false);
+  const [userNotes, setUserNotes] = useState('');
 
   useEffect(() => {
     setSearchTerm('');
@@ -246,8 +253,30 @@ const App: React.FC = () => {
           onProductAdd={handleProductAdd}
         />
       )}
+      
+      {isNotesOpen && (
+        <NotesModal
+            initialNotes={userNotes}
+            onSave={(notes) => setUserNotes(notes)}
+            onClose={() => setIsNotesOpen(false)}
+        />
+      )}
 
-      <FloatingActionButton onClick={() => setIsAddingProduct(true)} />
+      {/* Secondary FAB: Notes */}
+      <FloatingActionButton 
+        onClick={() => setIsNotesOpen(true)} 
+        icon={<PencilSquareIcon className="w-6 h-6" />}
+        className="bottom-40 right-4 w-14 h-14 bg-white text-blue-600"
+        ariaLabel="Anotações"
+      />
+
+      {/* Primary FAB: Scan/Add */}
+      <FloatingActionButton 
+        onClick={() => setIsAddingProduct(true)} 
+        icon={<QrCodeScannerIcon className="w-8 h-8" />}
+        className="bottom-20 right-4 w-16 h-16 bg-blue-600 text-white"
+        ariaLabel="Escanear produto"
+      />
 
       <BottomNav 
         activeTab={activeTab} 
