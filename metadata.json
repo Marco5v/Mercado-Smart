@@ -1,0 +1,7 @@
+{
+  "name": "Mercado Smart",
+  "description": "An intelligent application for managing household groceries and inventory, inspired by the Sam's Club UI. It helps track stock levels, suggest purchases, and manage shopping lists efficiently.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
