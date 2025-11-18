@@ -25,13 +25,17 @@ const MenuItem: React.FC<MenuItemProps> = ({ icon, label, isFeatured, onClick })
   </button>
 );
 
-const MoreScreen: React.FC = () => {
+interface MoreScreenProps {
+    onNavigate: (tab: string) => void;
+}
+
+const MoreScreen: React.FC<MoreScreenProps> = ({ onNavigate }) => {
   const menuItems = [
-    { id: 'stats', label: 'Estatísticas e Relatórios', icon: <StatsIcon className="w-8 h-8" />, isFeatured: true },
-    { id: 'profile', label: 'Meu Perfil', icon: <SparklesIcon className="w-6 h-6" />, isFeatured: false },
-    { id: 'history', label: 'Histórico de Compras', icon: <ArchiveBoxIcon className="w-6 h-6" />, isFeatured: false },
-    { id: 'settings', label: 'Configurar Alertas', icon: <Cog6ToothIcon className="w-6 h-6" />, isFeatured: false },
-    { id: 'logout', label: 'Sair', icon: <ArrowLeftOnRectangleIcon className="w-6 h-6" />, isFeatured: false },
+    { id: 'stats', label: 'Estatísticas e Relatórios', icon: <StatsIcon className="w-8 h-8" />, isFeatured: true, onClick: () => alert('Navegando para Estatísticas...') },
+    { id: 'profile', label: 'Meu Perfil', icon: <SparklesIcon className="w-6 h-6" />, isFeatured: false, onClick: () => onNavigate('profile') },
+    { id: 'history', label: 'Histórico de Compras', icon: <ArchiveBoxIcon className="w-6 h-6" />, isFeatured: false, onClick: () => alert('Navegando para Histórico...') },
+    { id: 'settings', label: 'Configurar Alertas', icon: <Cog6ToothIcon className="w-6 h-6" />, isFeatured: false, onClick: () => alert('Navegando para Configurações...') },
+    { id: 'logout', label: 'Sair', icon: <ArrowLeftOnRectangleIcon className="w-6 h-6" />, isFeatured: false, onClick: () => alert('Saindo...') },
   ];
 
   return (
@@ -46,7 +50,7 @@ const MoreScreen: React.FC = () => {
             label={item.label}
             icon={item.icon}
             isFeatured={item.isFeatured}
-            onClick={() => alert(`Navegando para ${item.label}`)}
+            onClick={item.onClick}
           />
         ))}
       </div>

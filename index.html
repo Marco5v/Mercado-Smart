@@ -51,6 +51,14 @@
       .animate-button-flash {
         animation: button-flash 0.3s ease-in-out;
       }
+      @keyframes scale-up {
+        0% { transform: scale(0.5); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+      }
+      @keyframes slide-up {
+        0% { transform: translateY(100%); }
+        100% { transform: translateY(0); }
+      }
     </style>
     <script type="importmap">
 {

@@ -9,7 +9,10 @@ import MoreScreen from './components/MoreScreen';
 import NotificationsScreen from './components/NotificationsScreen';
 import AddProductFlow from './components/product-add/AddProductFlow';
 import NotesModal from './components/NotesModal';
-import type { Product, Notification } from './types';
+import SplashScreen from './components/SplashScreen';
+import RegistrationModal from './components/RegistrationModal';
+import ProfileScreen from './components/ProfileScreen';
+import type { Product, Notification, UserProfile } from './types';
 import { initialNotifications } from './data/notifications';
 import { ShoppingCartIcon } from '@heroicons/react/24/outline';
 import CameraIcon from './components/icons/CameraIcon';
@@ -48,6 +51,12 @@ const quickAccessItems = [
 ];
 
 const App: React.FC = () => {
+  // --- APP LIFECYCLE STATE ---
+  const [isLoading, setIsLoading] = useState(true);
+  const [showRegistration, setShowRegistration] = useState(false);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+
+  // --- DATA STATE ---
   const [products, setProducts] = useState<Product[]>(mockProducts);
   const [shoppingCart, setShoppingCart] = useState<Map<number, number>>(() => {
     const initialCart = new Map<number, number>();
@@ -64,6 +73,40 @@ const App: React.FC = () => {
   // Notes functionality
   const [isNotesOpen, setIsNotesOpen] = useState(false);
   const [userNotes, setUserNotes] = useState('');
+
+  // --- INITIALIZATION LOGIC ---
+  useEffect(() => {
+    const initApp = async () => {
+        // Simulate splash screen delay (e.g. 2.5 seconds)
+        await new Promise(resolve => setTimeout(resolve, 2500));
+
+        const storedProfile = localStorage.getItem('mercado_smart_user_profile');
+        const isFirstLaunch = !localStorage.getItem('mercado_smart_is_first_launch_complete');
+        
+        if (storedProfile && !isFirstLaunch) {
+            setUserProfile(JSON.parse(storedProfile));
+            setIsLoading(false);
+        } else {
+            // Transition from Splash -> Registration Modal
+            setIsLoading(false);
+            setShowRegistration(true);
+        }
+    };
+
+    initApp();
+  }, []);
+
+  const handleRegistrationComplete = (profile: UserProfile) => {
+    localStorage.setItem('mercado_smart_user_profile', JSON.stringify(profile));
+    localStorage.setItem('mercado_smart_is_first_launch_complete', 'true');
+    setUserProfile(profile);
+    setShowRegistration(false);
+  };
+
+  const handleProfileUpdate = (profile: UserProfile) => {
+    localStorage.setItem('mercado_smart_user_profile', JSON.stringify(profile));
+    setUserProfile(profile);
+  };
 
   useEffect(() => {
     setSearchTerm('');
@@ -187,12 +230,29 @@ const App: React.FC = () => {
   }
 
   const renderContent = () => {
+    // Ensure dashboard elements are not interactive/visible during registration for a cleaner look
+    if (showRegistration) {
+        return (
+             <div className="h-full w-full bg-gray-100 opacity-50 filter blur-sm pointer-events-none">
+                <DashboardHeader 
+                    userName="Visitante"
+                    pantryStatus={0}
+                    notificationCount={0}
+                    onNotificationClick={() => {}}
+                />
+                <div className="p-8 text-center text-gray-500 mt-10">
+                    <p>Carregando dados...</p>
+                </div>
+            </div>
+        );
+    }
+
     switch(activeTab) {
       case 'home':
         return (
           <>
             <DashboardHeader 
-                userName="Marcos"
+                userName={userProfile?.name.split(' ')[0] || 'Usuário'}
                 pantryStatus={80}
                 notificationCount={unreadNotificationCount}
                 onNotificationClick={() => setActiveTab('notifications')}
@@ -225,7 +285,13 @@ const App: React.FC = () => {
                   onClearCart={() => setShoppingCart(new Map())}
                 />;
       case 'more':
-        return <MoreScreen />;
+        return <MoreScreen onNavigate={setActiveTab} />;
+      case 'profile':
+        return <ProfileScreen 
+            userProfile={userProfile} 
+            onUpdateProfile={handleProfileUpdate}
+            onBack={() => setActiveTab('more')}
+        />;
       case 'notifications':
         return <NotificationsScreen 
                   notifications={notifications} 
@@ -240,8 +306,16 @@ const App: React.FC = () => {
     }
   };
 
+  if (isLoading) {
+    return <SplashScreen />;
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
+       {showRegistration && (
+        <RegistrationModal onComplete={handleRegistrationComplete} />
+       )}
+
        {/* Conditional header rendering can be adjusted based on final navigation */}
       <main className="flex-grow pb-24">
         {renderContent()}
@@ -262,26 +336,32 @@ const App: React.FC = () => {
         />
       )}
 
-      {/* Secondary FAB: Notes */}
-      <FloatingActionButton 
-        onClick={() => setIsNotesOpen(true)} 
-        icon={<PencilSquareIcon className="w-6 h-6" />}
-        className="bottom-40 right-4 w-14 h-14 bg-white text-blue-600"
-        ariaLabel="Anotações"
-      />
+      {/* Secondary FAB: Notes - Hidden during registration */}
+      {activeTab !== 'profile' && !showRegistration && (
+          <FloatingActionButton 
+            onClick={() => setIsNotesOpen(true)} 
+            icon={<PencilSquareIcon className="w-6 h-6" />}
+            className="bottom-40 right-4 w-14 h-14 bg-white text-blue-600"
+            ariaLabel="Anotações"
+          />
+      )}
 
-      {/* Primary FAB: Scan/Add */}
-      <FloatingActionButton 
-        onClick={() => setIsAddingProduct(true)} 
-        icon={<QrCodeScannerIcon className="w-8 h-8" />}
-        className="bottom-20 right-4 w-16 h-16 bg-blue-600 text-white"
-        ariaLabel="Escanear produto"
-      />
+      {/* Primary FAB: Scan/Add - Hidden during registration */}
+      {activeTab !== 'profile' && !showRegistration && (
+        <FloatingActionButton 
+            onClick={() => setIsAddingProduct(true)} 
+            icon={<QrCodeScannerIcon className="w-8 h-8" />}
+            className="bottom-20 right-4 w-16 h-16 bg-blue-600 text-white"
+            ariaLabel="Escanear produto"
+        />
+      )}
 
-      <BottomNav 
-        activeTab={activeTab} 
-        onTabChange={setActiveTab}
-      />
+      {activeTab !== 'profile' && !showRegistration && (
+        <BottomNav 
+            activeTab={activeTab} 
+            onTabChange={setActiveTab}
+        />
+      )}
     </div>
   );
 };

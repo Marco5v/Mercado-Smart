@@ -44,3 +44,12 @@ export interface Notification {
   timestamp: string;
   productId?: number;
 }
+
+export interface UserProfile {
+  name: string;
+  phone: string;
+  email: string;
+  cep: string;
+  gender: 'Masculino' | 'Feminino' | 'NaoInformar' | '';
+  birthDate: string;
+}
