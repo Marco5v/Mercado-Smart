@@ -109,3 +109,173 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({ onComplete }) => 
            <div className="absolute -bottom-12 -right-12 w-40 h-40 bg-brand-gold/10 rounded-full blur-3xl"></div>
            
            <div className="relative z-10 flex flex-col items-center">
+             <div className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mb-4 backdrop-blur-md shadow-xl border border-white/10">
+                <UserCircleIcon className="w-12 h-12 text-brand-gold" />
+             </div>
+             <h2 className="text-2xl font-bold text-white mb-1 tracking-tight">Criar Conta</h2>
+             <p className="text-brand-blue-light text-sm font-medium">Preencha seus dados para começar</p>
+           </div>
+        </header>
+
+        <div className="flex-1 overflow-y-auto p-6 sm:p-8 bg-gray-50">
+            <form onSubmit={handleSubmit} className="space-y-5">
+                <div>
+                    <label className={labelClasses}>Nome Completo</label>
+                    <input
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        className={inputClasses}
+                        placeholder="Seu nome"
+                    />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                     <div>
+                        <label className={labelClasses}>Telefone</label>
+                        <input
+                            type="tel"
+                            name="phone"
+                            value={formData.phone}
+                            onChange={handlePhoneChange}
+                            maxLength={15}
+                            className={inputClasses}
+                            placeholder="(00) 00000-0000"
+                        />
+                    </div>
+                    <div>
+                        <label className={labelClasses}>Nascimento</label>
+                        <input
+                            type="date"
+                            name="birthDate"
+                            value={formData.birthDate}
+                            onChange={handleChange}
+                            className={inputClasses}
+                        />
+                    </div>
+                </div>
+
+                <div>
+                    <label className={labelClasses}>E-mail</label>
+                    <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        className={inputClasses}
+                        placeholder="seu@email.com"
+                    />
+                </div>
+
+                <div className="pt-2 pb-1 border-b border-gray-200/50">
+                    <p className="text-xs font-bold text-brand-navy uppercase tracking-wider">Endereço</p>
+                </div>
+
+                <div className="flex gap-4">
+                    <div className="w-1/3">
+                        <label className={labelClasses}>CEP</label>
+                        <div className="relative">
+                            <input
+                                type="text"
+                                name="cep"
+                                value={formData.cep}
+                                onChange={handleCepChange}
+                                maxLength={9}
+                                className={inputClasses}
+                                placeholder="00000-000"
+                            />
+                             {isLoadingCep && (
+                                <div className="absolute right-3 top-3.5 w-4 h-4 border-2 border-brand-gold border-t-transparent rounded-full animate-spin"></div>
+                            )}
+                        </div>
+                    </div>
+                    <div className="flex-1">
+                         <label className={labelClasses}>Cidade/UF</label>
+                         <div className="flex gap-2">
+                            <input
+                                type="text"
+                                name="city"
+                                value={formData.city}
+                                readOnly
+                                className={`${inputClasses} bg-gray-100 text-gray-500`}
+                                placeholder="Cidade"
+                            />
+                             <input
+                                type="text"
+                                name="state"
+                                value={formData.state}
+                                readOnly
+                                className={`${inputClasses} w-16 text-center bg-gray-100 text-gray-500`}
+                                placeholder="UF"
+                            />
+                         </div>
+                    </div>
+                </div>
+
+                 <div className="flex gap-4">
+                    <div className="flex-grow">
+                        <label className={labelClasses}>Endereço</label>
+                        <input
+                            type="text"
+                            name="address"
+                            value={formData.address}
+                            onChange={handleChange}
+                            className={inputClasses}
+                            placeholder="Rua, Avenida..."
+                        />
+                    </div>
+                    <div className="w-24">
+                        <label className={labelClasses}>Número</label>
+                        <input
+                            type="text"
+                            name="number"
+                            value={formData.number}
+                            onChange={handleChange}
+                            className={inputClasses}
+                            placeholder="123"
+                        />
+                    </div>
+                </div>
+
+                <div>
+                    <label className={labelClasses}>Bairro</label>
+                    <input
+                        type="text"
+                        name="neighborhood"
+                        value={formData.neighborhood}
+                        onChange={handleChange}
+                        className={inputClasses}
+                        placeholder="Bairro"
+                    />
+                </div>
+
+                <div className="pt-2">
+                    <label className={labelClasses}>Sexo</label>
+                    <select
+                        name="gender"
+                        value={formData.gender}
+                        onChange={handleChange}
+                        className={`${inputClasses} appearance-none`}
+                    >
+                        <option value="">Selecione</option>
+                        <option value="Masculino">Masculino</option>
+                        <option value="Feminino">Feminino</option>
+                        <option value="NaoInformar">Não Informar</option>
+                    </select>
+                </div>
+
+                <button
+                    type="submit"
+                    className="w-full bg-brand-gold text-brand-navy font-bold py-4 rounded-xl shadow-lg shadow-brand-gold/30 hover:brightness-105 active:scale-[0.98] transition-all mt-4 text-base"
+                >
+                    Finalizar Cadastro
+                </button>
+            </form>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default RegistrationModal;

@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import type { UserProfile } from '../types';
 import { UserCircleIcon, ArrowLeftIcon, CameraIcon } from '@heroicons/react/24/outline';
+import { CheckCircleIcon } from '@heroicons/react/24/solid';
 import { fetchAddressByCEP } from '../services/cepService';
 
 interface ProfileScreenProps {
@@ -25,6 +26,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ userProfile, onUpdateProf
     birthDate: '',
   });
   const [isLoadingCep, setIsLoadingCep] = useState(false);
+  const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
     if (userProfile) {
@@ -70,7 +72,8 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ userProfile, onUpdateProf
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onUpdateProfile(formData);
-    alert("Perfil atualizado com sucesso!");
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 3000);
   };
 
   return (
@@ -245,6 +248,13 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ userProfile, onUpdateProf
         <button className="w-full mt-6 text-red-500 font-medium text-sm py-2 hover:bg-red-50 rounded-lg transition-colors">
             Sair do Aplicativo
         </button>
+      </div>
+
+      <div className={`fixed bottom-10 left-0 right-0 flex justify-center pointer-events-none z-50 transition-all duration-500 ${showToast ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+        <div className="bg-brand-navy text-white px-6 py-3 rounded-full shadow-2xl flex items-center gap-3 pointer-events-auto ring-1 ring-brand-gold/20">
+          <CheckCircleIcon className="w-6 h-6 text-brand-gold" />
+          <span className="font-medium text-sm">Perfil atualizado com sucesso!</span>
+        </div>
       </div>
     </div>
   );

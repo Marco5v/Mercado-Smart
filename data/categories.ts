@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import type { Category } from '../types';
 import PackageVariantIcon from '../components/icons/categories/PackageVariantIcon';
 import FruitWatermelonIcon from '../components/icons/categories/FruitWatermelonIcon';
@@ -31,12 +31,9 @@ const rawCategories: (Omit<Category, 'icon'> & { icon: React.FC<React.SVGProps<S
 export const categoriesData: Category[] = rawCategories
   .sort((a, b) => a.visualPriority - b.visualPriority)
   .map(category => {
-    // In JSX, component names must start with a capital letter to be recognized as React components.
-    // The original code <category.icon ... /> was invalid because 'category.icon' is not a capitalized identifier.
     const IconComponent = category.icon;
     return {
       ...category,
-      // FIX: Replaced JSX with React.createElement to avoid TSX parsing errors in a .ts file.
       icon: React.createElement(IconComponent, { className: "w-10 h-10 text-blue-600" }),
     };
   });
