@@ -39,4 +39,4 @@ export const categoriesData: Category[] = rawCategories
       // FIX: Replaced JSX with React.createElement to avoid TSX parsing errors in a .ts file.
       icon: React.createElement(IconComponent, { className: "w-10 h-10 text-blue-600" }),
     };
-  }));
+  });

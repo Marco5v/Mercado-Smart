@@ -50,6 +50,11 @@ export interface UserProfile {
   phone: string;
   email: string;
   cep: string;
+  address?: string;
+  number?: string;
+  neighborhood?: string;
+  city?: string;
+  state?: string;
   gender: 'Masculino' | 'Feminino' | 'NaoInformar' | '';
   birthDate: string;
 }

@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import type { UserProfile } from '../types';
 import { UserCircleIcon, ArrowLeftIcon, CameraIcon } from '@heroicons/react/24/outline';
+import { fetchAddressByCEP } from '../services/cepService';
 
 interface ProfileScreenProps {
   userProfile: UserProfile | null;
@@ -15,9 +16,15 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ userProfile, onUpdateProf
     phone: '',
     email: '',
     cep: '',
+    address: '',
+    number: '',
+    neighborhood: '',
+    city: '',
+    state: '',
     gender: '',
     birthDate: '',
   });
+  const [isLoadingCep, setIsLoadingCep] = useState(false);
 
   useEffect(() => {
     if (userProfile) {
@@ -32,10 +39,27 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ userProfile, onUpdateProf
     setFormData(prev => ({ ...prev, phone: value }));
   };
 
-  const handleCepChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCepChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value.replace(/\D/g, '');
     value = value.replace(/^(\d{5})(\d)/, '$1-$2');
     setFormData(prev => ({ ...prev, cep: value }));
+
+    const cleanCep = value.replace(/\D/g, '');
+    if (cleanCep.length === 8) {
+      setIsLoadingCep(true);
+      const addressData = await fetchAddressByCEP(cleanCep);
+      setIsLoadingCep(false);
+
+      if (addressData) {
+        setFormData(prev => ({
+          ...prev,
+          address: addressData.street,
+          neighborhood: addressData.neighborhood,
+          city: addressData.city,
+          state: addressData.state
+        }));
+      }
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -84,16 +108,28 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ userProfile, onUpdateProf
             />
           </div>
 
-          <div>
-             <label className="block text-xs font-bold text-brand-blue-medium uppercase tracking-wider mb-1">Telefone</label>
-            <input
-              type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handlePhoneChange}
-              maxLength={15}
-              className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-gold focus:border-brand-gold focus:outline-none"
-            />
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+                 <label className="block text-xs font-bold text-brand-blue-medium uppercase tracking-wider mb-1">Telefone</label>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handlePhoneChange}
+                  maxLength={15}
+                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-gold focus:border-brand-gold focus:outline-none"
+                />
+            </div>
+            <div>
+                 <label className="block text-xs font-bold text-brand-blue-medium uppercase tracking-wider mb-1">Nascimento</label>
+                <input
+                  type="date"
+                  name="birthDate"
+                  value={formData.birthDate}
+                  onChange={handleChange}
+                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-gold focus:border-brand-gold focus:outline-none"
+                />
+             </div>
           </div>
 
           <div>
@@ -107,31 +143,83 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ userProfile, onUpdateProf
             />
           </div>
 
+          <div className="pt-4 pb-2 border-b border-gray-100">
+            <p className="text-sm font-bold text-brand-navy">Endereço</p>
+          </div>
+
           <div className="flex gap-4">
-             <div className="flex-1">
+             <div className="w-1/3">
                  <label className="block text-xs font-bold text-brand-blue-medium uppercase tracking-wider mb-1">CEP</label>
-                <input
-                  type="text"
-                  name="cep"
-                  value={formData.cep}
-                  onChange={handleCepChange}
-                  maxLength={9}
-                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-gold focus:border-brand-gold focus:outline-none"
-                />
+                 <div className="relative">
+                    <input
+                    type="text"
+                    name="cep"
+                    value={formData.cep}
+                    onChange={handleCepChange}
+                    maxLength={9}
+                    className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-gold focus:border-brand-gold focus:outline-none"
+                    />
+                    {isLoadingCep && (
+                    <div className="absolute right-3 top-3 w-4 h-4 border-2 border-brand-gold border-t-transparent rounded-full animate-spin"></div>
+                    )}
+                 </div>
              </div>
              <div className="flex-1">
-                 <label className="block text-xs font-bold text-brand-blue-medium uppercase tracking-wider mb-1">Nascimento</label>
-                <input
-                  type="date"
-                  name="birthDate"
-                  value={formData.birthDate}
-                  onChange={handleChange}
-                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-gold focus:border-brand-gold focus:outline-none"
-                />
+                 <label className="block text-xs font-bold text-brand-blue-medium uppercase tracking-wider mb-1">Cidade/UF</label>
+                 <div className="flex gap-2">
+                    <input
+                        type="text"
+                        name="city"
+                        value={formData.city}
+                        readOnly
+                        className="w-full p-3 bg-gray-100 border border-gray-200 rounded-xl text-gray-500 text-sm"
+                    />
+                    <input
+                        type="text"
+                        name="state"
+                        value={formData.state}
+                        readOnly
+                        className="w-16 p-3 bg-gray-100 border border-gray-200 rounded-xl text-gray-500 text-center text-sm"
+                    />
+                 </div>
              </div>
           </div>
 
+          <div className="flex gap-4">
+              <div className="flex-grow">
+                <label className="block text-xs font-bold text-brand-blue-medium uppercase tracking-wider mb-1">Endereço</label>
+                <input
+                  type="text"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-gold focus:border-brand-gold focus:outline-none"
+                />
+              </div>
+              <div className="w-24">
+                <label className="block text-xs font-bold text-brand-blue-medium uppercase tracking-wider mb-1">Número</label>
+                <input
+                  type="text"
+                  name="number"
+                  value={formData.number}
+                  onChange={handleChange}
+                  className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-gold focus:border-brand-gold focus:outline-none"
+                />
+              </div>
+          </div>
+
           <div>
+            <label className="block text-xs font-bold text-brand-blue-medium uppercase tracking-wider mb-1">Bairro</label>
+            <input
+              type="text"
+              name="neighborhood"
+              value={formData.neighborhood}
+              onChange={handleChange}
+              className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-gold focus:border-brand-gold focus:outline-none"
+            />
+          </div>
+
+          <div className="pt-4">
              <label className="block text-xs font-bold text-brand-blue-medium uppercase tracking-wider mb-1">Sexo</label>
             <select
               name="gender"
@@ -139,6 +227,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ userProfile, onUpdateProf
               onChange={handleChange}
               className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-gold focus:border-brand-gold focus:outline-none"
             >
+              <option value="">Selecione</option>
               <option value="Masculino">Masculino</option>
               <option value="Feminino">Feminino</option>
               <option value="NaoInformar">Não Informar</option>
